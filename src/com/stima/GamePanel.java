@@ -7,7 +7,10 @@ package com.stima;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
@@ -47,6 +50,7 @@ public class GamePanel extends JPanel implements ActionListener{
     private String prevMove = " ";
     private String currentMove = " ";
     private int moveCounter = 1;
+    private boolean auto = false;
     
     public GamePanel() {
         this.setPreferredSize(new Dimension(WIDTH, HEIGHT));
@@ -91,6 +95,23 @@ public class GamePanel extends JPanel implements ActionListener{
                     }
                 }
                 g.fillRect(i*UNIT_SIZE, j*UNIT_SIZE, UNIT_SIZE, UNIT_SIZE);
+                
+                if(i == 8 && j == 16){
+                    g.setColor(Color.BLUE);
+                }
+                else if(i == 0 && j == 8){
+                    g.setColor(Color.RED);
+                }
+                else if(i == 8 && j == 0){
+                    g.setColor(Color.GREEN);
+                }
+                else if(i == 16 && j == 8){
+                    g.setColor(Color.ORANGE);
+                }
+                else if(i == 9 && j == 7){
+                    g.setColor(Color.CYAN);
+                }
+                g.fillOval(i*UNIT_SIZE, j*UNIT_SIZE, UNIT_SIZE, UNIT_SIZE);
                 try {
                     if(map.at(i, j).getObject() != null) {
                         sprite = ImageIO.read(new File(map.at(i, j).getObject().getImagePath()));
@@ -196,44 +217,55 @@ public class GamePanel extends JPanel implements ActionListener{
         return head.getPath();
     }
     
-    public void searchPath(String dest) {
+    public double searchPath(String dest, boolean isEuclidean) {
         Point Pdest;
-        if(dest.equals("Gate 1")){
+        if(dest.equals("Blue Gate")){
             Pdest = new Point(8,16);
         }
-        else if(dest.equals("Gate 2")){
+        else if(dest.equals("Red Gate")){
             Pdest = new Point(0,8);
         }
-        else if(dest.equals("Gate 3")){
+        else if(dest.equals("Green Gate")){
             Pdest = new Point(8,0);
         }
-        else{
+        else if(dest.equals("Orange Gate")){
             Pdest = new Point(16,8);
         }
-        path = AStarAlgorithm(player.getPosition(), Pdest, true);
+        else{
+            Pdest = new Point(9,7);
+        }
+        path = AStarAlgorithm(player.getPosition(), Pdest, isEuclidean);
+        return path.size()-1;
+    }
+    
+    public void setAuto(boolean auto){
+        this.auto = auto;
     }
     
     public void autoMove() {
-        if(!path.isEmpty()){
-            if(path.get(0).x == player.getPosition().x && path.get(0).y == player.getPosition().y){
-                direction = " ";
+        if(auto){
+            if(!path.isEmpty()){
+                if(path.get(0).x == player.getPosition().x && path.get(0).y == player.getPosition().y){
+                    direction = " ";
+                }
+                else if(path.get(0).x == player.getPosition().x-1 && path.get(0).y == player.getPosition().y){
+                    direction = "L";
+                }
+                else if(path.get(0).x == player.getPosition().x+1 && path.get(0).y == player.getPosition().y){
+                    direction = "R";
+                }
+                else if(path.get(0).x == player.getPosition().x && path.get(0).y == player.getPosition().y-1){
+                    direction = "U";
+                }
+                else if(path.get(0).x == player.getPosition().x && path.get(0).y == player.getPosition().y+1){
+                    direction = "D";
+                }
+                path.remove(0);
             }
-            else if(path.get(0).x == player.getPosition().x-1 && path.get(0).y == player.getPosition().y){
-                direction = "L";
+            else{
+                path = null;
+                auto = false;
             }
-            else if(path.get(0).x == player.getPosition().x+1 && path.get(0).y == player.getPosition().y){
-                direction = "R";
-            }
-            else if(path.get(0).x == player.getPosition().x && path.get(0).y == player.getPosition().y-1){
-                direction = "U";
-            }
-            else if(path.get(0).x == player.getPosition().x && path.get(0).y == player.getPosition().y+1){
-                direction = "D";
-            }
-            path.remove(0);
-        }
-        else{
-            path = null;
         }
     }
     

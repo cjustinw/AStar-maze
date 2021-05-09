@@ -6,6 +6,7 @@
 package com.stima;
 
 import java.awt.BorderLayout;
+import javax.swing.ButtonGroup;
 
 /**
  *
@@ -14,6 +15,7 @@ import java.awt.BorderLayout;
 public class GameFrame extends javax.swing.JFrame {
 
     GamePanel game;
+    ButtonGroup btnGroup;
     /**
      * Creates new form Game
      */
@@ -25,15 +27,19 @@ public class GameFrame extends javax.swing.JFrame {
         gamePanel.revalidate();
         gamePanel.repaint();
         setDestination();
+        btnGroup = new ButtonGroup();
+        btnGroup.add(euclideanBtn);
+        btnGroup.add(manhattanBtn);
     }
     
     public void setDestination() {
         destinationList.removeAllItems();
         destinationList.addItem("Select Destination");
-        destinationList.addItem("Gate 1");
-        destinationList.addItem("Gate 2");
-        destinationList.addItem("Gate 3");
-        destinationList.addItem("Gate 4");
+        destinationList.addItem("Blue Gate");
+        destinationList.addItem("Red Gate");
+        destinationList.addItem("Green Gate");
+        destinationList.addItem("Orange Gate");
+        destinationList.addItem("Cyan Gate");
     }
 
     /**
@@ -49,13 +55,16 @@ public class GameFrame extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         destinationList = new javax.swing.JComboBox<>();
-        startBtn = new javax.swing.JButton();
+        pathBtn = new javax.swing.JButton();
         euclideanBtn = new javax.swing.JRadioButton();
         manhattanBtn = new javax.swing.JRadioButton();
         jLabel3 = new javax.swing.JLabel();
+        autoMoveBtn = new javax.swing.JButton();
+        distanceLabel = new javax.swing.JLabel();
         gamePanel = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         setPreferredSize(new java.awt.Dimension(720, 580));
         setResizable(false);
 
@@ -78,12 +87,12 @@ public class GameFrame extends javax.swing.JFrame {
             }
         });
 
-        startBtn.setText("Start");
-        startBtn.setFocusPainted(false);
-        startBtn.setFocusable(false);
-        startBtn.addActionListener(new java.awt.event.ActionListener() {
+        pathBtn.setText("Path");
+        pathBtn.setFocusPainted(false);
+        pathBtn.setFocusable(false);
+        pathBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                startBtnActionPerformed(evt);
+                pathBtnActionPerformed(evt);
             }
         });
 
@@ -109,20 +118,32 @@ public class GameFrame extends javax.swing.JFrame {
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel3.setText("13519006");
 
+        autoMoveBtn.setText("Move");
+        autoMoveBtn.setFocusable(false);
+        autoMoveBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                autoMoveBtnActionPerformed(evt);
+            }
+        });
+
+        distanceLabel.setText("Distance : ");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(startBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(manhattanBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 144, Short.MAX_VALUE)
-                    .addComponent(euclideanBtn, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(destinationList, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(distanceLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(pathBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(manhattanBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 144, Short.MAX_VALUE)
+                    .addComponent(euclideanBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(destinationList, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(autoMoveBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -141,7 +162,11 @@ public class GameFrame extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(manhattanBtn)
                 .addGap(18, 18, 18)
-                .addComponent(startBtn)
+                .addComponent(pathBtn)
+                .addGap(18, 18, 18)
+                .addComponent(autoMoveBtn)
+                .addGap(18, 18, 18)
+                .addComponent(distanceLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -179,16 +204,26 @@ public class GameFrame extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void startBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startBtnActionPerformed
+    private void pathBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pathBtnActionPerformed
         // TODO add your handling code here:
         if(!destinationList.getSelectedItem().toString().equals("Select Destination")){
-            game.searchPath(destinationList.getSelectedItem().toString());
+            double result = 0;
+            if(euclideanBtn.isSelected()){
+                result = game.searchPath(destinationList.getSelectedItem().toString(), true);
+                System.out.println("Euclidean");
+            }
+            else if(manhattanBtn.isSelected()){
+                result = game.searchPath(destinationList.getSelectedItem().toString(), false);
+                System.out.println("Manhattan");
+            }
+            if(result != 0){
+                distanceLabel.setText("Distance : " + result);
+            }
         }
-    }//GEN-LAST:event_startBtnActionPerformed
+    }//GEN-LAST:event_pathBtnActionPerformed
 
     private void euclideanBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_euclideanBtnActionPerformed
         // TODO add your handling code here:
-        
     }//GEN-LAST:event_euclideanBtnActionPerformed
 
     private void destinationListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_destinationListActionPerformed
@@ -198,7 +233,15 @@ public class GameFrame extends javax.swing.JFrame {
 
     private void manhattanBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_manhattanBtnActionPerformed
         // TODO add your handling code here:
+        
     }//GEN-LAST:event_manhattanBtnActionPerformed
+
+    private void autoMoveBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_autoMoveBtnActionPerformed
+        // TODO add your handling code here:
+        game.setAuto(true);
+        btnGroup.clearSelection();
+        distanceLabel.setText("Distance : ");
+    }//GEN-LAST:event_autoMoveBtnActionPerformed
 
     /**
      * @param args the command line arguments
@@ -237,7 +280,9 @@ public class GameFrame extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton autoMoveBtn;
     private javax.swing.JComboBox<String> destinationList;
+    private javax.swing.JLabel distanceLabel;
     private javax.swing.JRadioButton euclideanBtn;
     private javax.swing.JPanel gamePanel;
     private javax.swing.JLabel jLabel1;
@@ -245,6 +290,6 @@ public class GameFrame extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JRadioButton manhattanBtn;
-    private javax.swing.JButton startBtn;
+    private javax.swing.JButton pathBtn;
     // End of variables declaration//GEN-END:variables
 }
